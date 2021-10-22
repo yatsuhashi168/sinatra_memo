@@ -1,1 +1,18 @@
-<div>ここは新規メモ作成画面です</div>
+<div>
+  <h1>メモ作成</h1>
+  <form action="/new" method="post">
+    <ul>
+      <li>
+        <label for="name">名前:</label>
+        <input type="text" id="name" name="name">
+      </li>
+      <li>
+        <label for="content">内容:</label>
+        <textarea id="content" name="content"></textarea>
+      </li>
+      <li>
+        <button type="submit">登録</button>
+      </li>
+    </ul>
+  </form>
+</div>
