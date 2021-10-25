@@ -7,7 +7,7 @@ get '/' do
   @memos = []
   Dir.glob('*', base: 'memos').each do |file|
     File.open("./memos/#{file}") do |memo|
-      @memos << JSON.load(memo)['title']
+      @memos << JSON.load(memo)
     end
   end
   erb :index
@@ -33,7 +33,7 @@ post '/new' do
   redirect to('/')
 end
 
-get '/detail' do
+get '/memo/:id' do
   erb :detail
 end
 

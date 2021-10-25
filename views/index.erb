@@ -4,7 +4,7 @@
 </form>
 <div><% @memos.each do |memo| %>
   <ul>
-    <li><%= memo %></li>
+    <li><a href="../memo/<%= memo['id'] %>"><%= memo['title'] %></a></li>
   </ul>
   <% end %>
 </div>
