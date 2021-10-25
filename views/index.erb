@@ -1,1 +1,10 @@
-<div>ここは一覧画面です</div>
+<p>ここは一覧画面です</p>
+<form action = "/new" method = "get" >
+  <button type="submit">作成</button>
+</form>
+<div><% @memos.each do |memo| %>
+  <ul>
+    <li><%= memo %></li>
+  </ul>
+  <% end %>
+</div>
