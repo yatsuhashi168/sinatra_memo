@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+enable :method_override
 
 get '/' do
   @title = '一覧'
@@ -34,9 +35,15 @@ post '/new' do
 end
 
 get '/memo/:id' do
+  File.open("./memos/memo_#{params[:id]}.json") do |memo|
+    @memo = JSON.load(memo)
+  end
+  @memo_id = @memo['id']
+  @memo_title = @memo['title']
+  @memo_content = @memo['content']
   erb :detail
 end
 
-get '/edit' do
+get '/memo/:id/edit' do
   erb :edit
 end
