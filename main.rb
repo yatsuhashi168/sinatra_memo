@@ -44,6 +44,11 @@ get '/memo/:id' do
   erb :detail
 end
 
+delete '/memo/:id' do
+  File.delete("./memos/memo_#{params[:id]}.json")
+  redirect to('/')
+end
+
 get '/memo/:id/edit' do
   erb :edit
 end
