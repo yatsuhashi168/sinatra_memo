@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+require 'erb'
+include ERB::Util
 enable :method_override
 
 get '/' do
@@ -20,8 +22,8 @@ get '/new' do
 end
 
 post '/new' do
-  name =  params[:name]
-  content = params[:content]
+  name =  h(params[:name])
+  content = h(params[:content])
   id = if Dir.empty?('./memos')
          1
        else
@@ -53,8 +55,8 @@ patch '/memo/:id' do
   memo = File.open("./memos/memo_#{params[:id]}.json") do |file|
     JSON.load(file)
   end
-  memo['name'] = params[:name]
-  memo['content'] = params[:content]
+  memo['name'] = h(params[:name])
+  memo['content'] = h(params[:content])
   File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
     JSON.dump(memo, file)
   end
