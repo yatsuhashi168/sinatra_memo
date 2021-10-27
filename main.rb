@@ -20,14 +20,14 @@ get '/new' do
 end
 
 post '/new' do
-  title =  params[:name]
+  name =  params[:name]
   content = params[:content]
   id = if Dir.empty?('./memos')
          1
        else
          Dir.glob('*', base: 'memos').last[/\d+/].to_i + 1
        end
-  memo = {'id' => id, 'title' => title, 'content' => content}
+  memo = {'id' => id, 'name' => name, 'content' => content}
   File.open("./memos/memo_#{id}.json", 'w') do |file|
     JSON.dump(memo, file)
   end
@@ -39,7 +39,7 @@ get '/memo/:id' do
     @memo = JSON.load(memo)
   end
   @memo_id = @memo['id']
-  @memo_title = @memo['title']
+  @memo_name = @memo['name']
   @memo_content = @memo['content']
   erb :detail
 end
@@ -49,6 +49,24 @@ delete '/memo/:id' do
   redirect to('/')
 end
 
+patch '/memo/:id' do
+  memo = File.open("./memos/memo_#{params[:id]}.json") do |file|
+    JSON.load(file)
+  end
+  memo['name'] = params[:name]
+  memo['content'] = params[:content]
+  File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
+    JSON.dump(memo, file)
+  end
+  redirect to("/memo/#{params[:id]}")
+end
+
 get '/memo/:id/edit' do
+  File.open("./memos/memo_#{params[:id]}.json") do |memo|
+    @memo = JSON.load(memo)
+  end
+  @memo_id = @memo['id']
+  @memo_name = @memo['name']
+  @memo_content = @memo['content']
   erb :edit
 end
