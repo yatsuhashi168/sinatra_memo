@@ -1,17 +1,22 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'erb'
-include ERB::Util
 enable :method_override
+
+helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+end
 
 get '/' do
   @title = '一覧'
   @memos = []
   Dir.glob('*', base: 'memos').each do |file|
-    File.open("./memos/#{file}") do |memo|
-      @memos << JSON.load(memo)
-    end
+    @memos << JSON.parse(File.read("./memos/#{file}"))
   end
   erb :index
 end
@@ -29,7 +34,7 @@ post '/new' do
        else
          Dir.glob('*', base: 'memos').last[/\d+/].to_i + 1
        end
-  memo = {'id' => id, 'name' => name, 'content' => content}
+  memo = { 'id' => id, 'name' => name, 'content' => content }
   File.open("./memos/memo_#{id}.json", 'w') do |file|
     JSON.dump(memo, file)
   end
@@ -37,9 +42,7 @@ post '/new' do
 end
 
 get '/memo/:id' do
-  File.open("./memos/memo_#{params[:id]}.json") do |memo|
-    @memo = JSON.load(memo)
-  end
+  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
   @title = @memo['name']
   @memo_id = @memo['id']
   @memo_name = @memo['name']
@@ -53,9 +56,7 @@ delete '/memo/:id' do
 end
 
 patch '/memo/:id' do
-  memo = File.open("./memos/memo_#{params[:id]}.json") do |file|
-    JSON.load(file)
-  end
+  memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
   memo['name'] = h(params[:name])
   memo['content'] = h(params[:content])
   File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
@@ -65,9 +66,7 @@ patch '/memo/:id' do
 end
 
 get '/memo/:id/edit' do
-  File.open("./memos/memo_#{params[:id]}.json") do |memo|
-    @memo = JSON.load(memo)
-  end
+  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
   @title = @memo['name']
   @memo_id = @memo['id']
   @memo_name = @memo['name']
