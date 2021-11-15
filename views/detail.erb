@@ -1,15 +1,20 @@
-<p>タイトル：</p>
-<div><%= @memo_name %></div>
-<p>内容：</p>
-<div><%= @memo_content %></div>
-<form action = "/memo/<%= @memo_id %>/edit" method = "get" >
-  <button type="submit">編集</button>
-</form>
-<form action = "/memo/<%= @memo_id %>" method = "post" >
-  <input type="hidden" name="_method" value="DELETE">
-  <button type="submit">削除</button>
-</form>
-<form action = "/" method = "get" >
-  <button type="submit">一覧</button>
-</form>
-
+<section class="section">
+  <div class="content">タイトル：
+    <div><%= @memo_name %></div>
+  </div>
+  <div class="content">内容：
+    <div><%= @memo_content %></div>
+  </div>
+  <div class="buttons are-small field is-grouped">
+    <form class="control" action = "/memo/<%= @memo_id %>/edit" method = "get" >
+      <button class="button is-primary">編集</button>
+    </form>
+    <form class="control" action = "/memo/<%= @memo_id %>" method = "post" >
+      <input type="hidden" name="_method" value="DELETE">
+      <button class="button is-danger">削除</button>
+    </form>
+    <form class="control" action = "/" method = "get" >
+      <button class="button is-info">一覧</button>
+    </form>
+  </div>
+</section>

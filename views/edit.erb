@@ -1,19 +1,24 @@
-<div>
-  <h1>メモ編集</h1>
-  <form action="/memo/<%= @memo_id %>" method="post">
-    <ul>
-      <li>
-        <label for="name">名前:</label>
-        <input type="text" id="name" name="name" value="<%= @memo_name %>">
-      </li>
-      <li>
-        <label for="content">内容:</label>
-        <textarea id="content" name="content" ><%= @memo_content %></textarea>
-      </li>
-      <li>
-        <input type="hidden" name="_method" value="PATCH">
-        <button type="submit">登録</button>
-      </li>
-    </ul>
-  </form>
-</div>
+<section class="section">
+  <div class="content">
+    <form action="/memo/<%= @memo_id %>" method="post">
+      <div class="field">
+        <label class="label" for="name">名前:</label>
+        <div class="control">
+          <input type="text" id="name" name="name" value="<%= @memo_name %>">
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="content">内容:</label>
+        <div class="control">
+          <textarea class="textarea" id="content" name="content" ><%= @memo_content %></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input type="hidden" name="_method" value="PATCH">
+          <button class="button is-success" type="submit">登録</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

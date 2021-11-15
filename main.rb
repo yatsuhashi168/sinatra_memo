@@ -40,6 +40,7 @@ get '/memo/:id' do
   File.open("./memos/memo_#{params[:id]}.json") do |memo|
     @memo = JSON.load(memo)
   end
+  @title = @memo['name']
   @memo_id = @memo['id']
   @memo_name = @memo['name']
   @memo_content = @memo['content']
@@ -67,6 +68,7 @@ get '/memo/:id/edit' do
   File.open("./memos/memo_#{params[:id]}.json") do |memo|
     @memo = JSON.load(memo)
   end
+  @title = @memo['name']
   @memo_id = @memo['id']
   @memo_name = @memo['name']
   @memo_content = @memo['content']
