@@ -82,8 +82,13 @@ get '/memo/:id' do
   erb :detail
 end
 
+# delete '/memo/:id' do
+#   File.delete("./memos/memo_#{params[:id]}.json")
+#   redirect to('/')
+# end
+
 delete '/memo/:id' do
-  File.delete("./memos/memo_#{params[:id]}.json")
+  PG.connect(dbname: 'sinatra_memo').exec("DELETE FROM memos WHERE id = #{params[:id]}")
   redirect to('/')
 end
 
