@@ -92,13 +92,20 @@ delete '/memo/:id' do
   redirect to('/')
 end
 
+# patch '/memo/:id' do
+#   memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
+#   memo['name'] = h(params[:name])
+#   memo['content'] = h(params[:content])
+#   File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
+#     JSON.dump(memo, file)
+#   end
+#   redirect to("/memo/#{params[:id]}")
+# end
+
 patch '/memo/:id' do
-  memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-  memo['name'] = h(params[:name])
-  memo['content'] = h(params[:content])
-  File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
-    JSON.dump(memo, file)
-  end
+  memo_name = h(params[:name])
+  memo_content = h(params[:content])
+  PG.connect(dbname: 'sinatra_memo').exec("UPDATE memos SET name = '#{memo_name}', content = '#{memo_content}' WHERE id = #{params[:id]}")
   redirect to("/memo/#{params[:id]}")
 end
 
