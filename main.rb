@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'erb'
+require 'pg'
 enable :method_override
 
 helpers do
@@ -26,18 +27,27 @@ get '/new' do
   erb :new
 end
 
+# post '/new' do
+#   name =  h(params[:name])
+#   content = h(params[:content])
+#   id = if Dir.empty?('./memos')
+#          1
+#        else
+#          Dir.glob('*', base: 'memos').last[/\d+/].to_i + 1
+#        end
+#   memo = { 'id' => id, 'name' => name, 'content' => content }
+#   File.open("./memos/memo_#{id}.json", 'w') do |file|
+#     JSON.dump(memo, file)
+#   end
+#   redirect to('/')
+# end
+
 post '/new' do
-  name =  h(params[:name])
+  name = h(params[:name])
   content = h(params[:content])
-  id = if Dir.empty?('./memos')
-         1
-       else
-         Dir.glob('*', base: 'memos').last[/\d+/].to_i + 1
-       end
-  memo = { 'id' => id, 'name' => name, 'content' => content }
-  File.open("./memos/memo_#{id}.json", 'w') do |file|
-    JSON.dump(memo, file)
-  end
+  connection = PG.connect(dbname: 'sinatra_memo')
+  connection.exec("INSERT INTO memos(name, content) VALUES ('#{name}', '#{content}')")
+
   redirect to('/')
 end
 
