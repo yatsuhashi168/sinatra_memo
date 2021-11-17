@@ -13,12 +13,25 @@ helpers do
   end
 end
 
+# get '/' do
+#   @title = '一覧'
+#   @memos = []
+#   Dir.glob('*', base: 'memos').each do |file|
+#     @memos << JSON.parse(File.read("./memos/#{file}"))
+#   end
+#   erb :index
+# end
+
 get '/' do
   @title = '一覧'
   @memos = []
-  Dir.glob('*', base: 'memos').each do |file|
-    @memos << JSON.parse(File.read("./memos/#{file}"))
+  connection = PG.connect(dbname: 'sinatra_memo')
+  connection.exec('SELECT * FROM memos') do |results|
+    results.each do |memo|
+      @memos << memo
+    end
   end
+
   erb :index
 end
 
@@ -51,12 +64,21 @@ post '/new' do
   redirect to('/')
 end
 
+# get '/memo/:id' do
+#   @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
+#   @title = @memo['name']
+#   @memo_id = @memo['id']
+#   @memo_name = @memo['name']
+#   @memo_content = @memo['content']
+#   erb :detail
+# end
+
 get '/memo/:id' do
-  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-  @title = @memo['name']
-  @memo_id = @memo['id']
-  @memo_name = @memo['name']
-  @memo_content = @memo['content']
+  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
+  @title = @memo[0]['name']
+  @memo_id = @memo[0]['id']
+  @memo_name = @memo[0]['name']
+  @memo_content = @memo[0]['content']
   erb :detail
 end
 
