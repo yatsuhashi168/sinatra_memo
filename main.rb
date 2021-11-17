@@ -26,7 +26,7 @@ get '/' do
   @title = '一覧'
   @memos = []
   connection = PG.connect(dbname: 'sinatra_memo')
-  connection.exec('SELECT * FROM memos') do |results|
+  connection.exec('SELECT * FROM memos ORDER BY id') do |results|
     results.each do |memo|
       @memos << memo
     end
