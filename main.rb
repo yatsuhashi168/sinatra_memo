@@ -21,12 +21,12 @@ get '/' do
   erb :index
 end
 
-get '/new' do
+get '/memo/new' do
   @title = '新規作成'
   erb :new
 end
 
-post '/new' do
+post '/memo' do
   name =  h(params[:name])
   content = h(params[:content])
   id = if Dir.empty?('./memos')
