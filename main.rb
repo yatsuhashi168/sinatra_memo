@@ -27,8 +27,8 @@ get '/memo/new' do
 end
 
 post '/memo' do
-  name =  h(params[:name])
-  content = h(params[:content])
+  name =  params[:name]
+  content = params[:content]
   id = if Dir.empty?('./memos')
          1
        else
@@ -57,8 +57,8 @@ end
 
 patch '/memo/:id' do
   memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-  memo['name'] = h(params[:name])
-  memo['content'] = h(params[:content])
+  memo['name'] = params[:name]
+  memo['content'] = params[:content]
   File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
     JSON.dump(memo, file)
   end

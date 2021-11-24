@@ -1,9 +1,9 @@
 <section class="section">
   <div class="content">タイトル：
-    <div><%= @memo_name %></div>
+    <div><%= h(@memo_name) %></div>
   </div>
   <div class="content">内容：
-    <div><%= @memo_content %></div>
+    <div><%= h(@memo_content) %></div>
   </div>
   <div class="buttons are-small field is-grouped">
     <form class="control" action = "/memo/<%= @memo_id %>/edit" method = "get" >

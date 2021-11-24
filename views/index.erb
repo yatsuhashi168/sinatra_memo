@@ -1,7 +1,7 @@
 <section class="section">
   <div class="content"><% @memos.each do |memo| %>
       <ul>
-        <li><a href="../memo/<%= memo['id'] %>"><%= memo['name'] %></a></li>
+        <li><a href="../memo/<%= memo['id'] %>"><%= h(memo['name']) %></a></li>
       </ul>
     <% end %>
   </div>
