@@ -44,9 +44,6 @@ end
 get '/memo/:id' do
   @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
   @title = @memo['name']
-  @memo_id = @memo['id']
-  @memo_name = @memo['name']
-  @memo_content = @memo['content']
   erb :detail
 end
 
@@ -68,8 +65,5 @@ end
 get '/memo/:id/edit' do
   @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
   @title = @memo['name']
-  @memo_id = @memo['id']
-  @memo_name = @memo['name']
-  @memo_content = @memo['content']
   erb :edit
 end

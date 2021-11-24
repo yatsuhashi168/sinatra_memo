@@ -1,16 +1,16 @@
 <section class="section">
   <div class="content">
-    <form action="/memo/<%= @memo_id %>" method="post">
+    <form action="/memo/<%= @memo['id'] %>" method="post">
       <div class="field">
         <label class="label" for="name">名前:</label>
         <div class="control">
-          <input type="text" id="name" name="name" value="<%= h(@memo_name) %>">
+          <input type="text" id="name" name="name" value="<%= h(@memo['name']) %>">
         </div>
       </div>
       <div class="field">
         <label class="label" for="content">内容:</label>
         <div class="control">
-          <textarea class="textarea" id="content" name="content" ><%= h(@memo_content) %></textarea>
+          <textarea class="textarea" id="content" name="content" ><%= h(@memo['content']) %></textarea>
         </div>
       </div>
       <div class="field">
