@@ -14,9 +14,8 @@ end
 
 get '/' do
   @title = '一覧'
-  @memos = []
-  Dir.glob('*', base: 'memos').each do |file|
-    @memos << JSON.parse(File.read("./memos/#{file}"))
+  @memos = Dir.glob('*', base: 'memos').map do |file|
+    JSON.parse(File.read("./memos/#{file}"))
   end
   erb :index
 end
