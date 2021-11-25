@@ -1,15 +1,15 @@
 <section class="section">
   <div class="content">タイトル：
-    <div><%= h(@memo['name']) %></div>
+    <div><%= h(@memo[:name]) %></div>
   </div>
   <div class="content">内容：
-    <div><%= h(@memo['content']) %></div>
+    <div><%= h(@memo[:content]) %></div>
   </div>
   <div class="buttons are-small field is-grouped">
-    <form class="control" action = "/memo/<%= @memo['id'] %>/edit" method = "get" >
+    <form class="control" action = "/memo/<%= @memo[:id] %>/edit" method = "get" >
       <button class="button is-primary">編集</button>
     </form>
-    <form class="control" action = "/memo/<%= @memo['id'] %>" method = "post" >
+    <form class="control" action = "/memo/<%= @memo[:id] %>" method = "post" >
       <input type="hidden" name="_method" value="DELETE">
       <button class="button is-danger">削除</button>
     </form>

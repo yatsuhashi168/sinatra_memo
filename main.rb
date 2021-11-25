@@ -15,7 +15,7 @@ end
 get '/' do
   @title = '一覧'
   @memos = Dir.glob('*', base: 'memos').map do |file|
-    JSON.parse(File.read("./memos/#{file}"))
+    JSON.parse(File.read("./memos/#{file}"), symbolize_names: true)
   end
   erb :index
 end
@@ -41,8 +41,8 @@ post '/memo' do
 end
 
 get '/memo/:id' do
-  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-  @title = @memo['name']
+  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"), symbolize_names: true)
+  @title = @memo[:name]
   erb :detail
 end
 
@@ -52,9 +52,9 @@ delete '/memo/:id' do
 end
 
 patch '/memo/:id' do
-  memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-  memo['name'] = params[:name]
-  memo['content'] = params[:content]
+  memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"), symbolize_names: true)
+  memo[:name] = params[:name]
+  memo[:content] = params[:content]
   File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
     JSON.dump(memo, file)
   end
@@ -62,7 +62,7 @@ patch '/memo/:id' do
 end
 
 get '/memo/:id/edit' do
-  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-  @title = @memo['name']
+  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"), symbolize_names: true)
+  @title = @memo[:name]
   erb :edit
 end
