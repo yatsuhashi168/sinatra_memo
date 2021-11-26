@@ -15,25 +15,23 @@ end
 
 get '/' do
   @title = '一覧'
-  @memos = []
   connection = PG.connect(dbname: 'sinatra_memo')
-  connection.exec('SELECT * FROM memos ORDER BY id') do |results|
-    results.each do |memo|
-      @memos << memo
+  @memos = connection.exec('SELECT * FROM memos ORDER BY id') do |results|
+    results.map do |memo|
+      memo
     end
   end
-
   erb :index
 end
 
-get '/new' do
+get '/memo/new' do
   @title = '新規作成'
   erb :new
 end
 
-post '/new' do
-  name = h(params[:name])
-  content = h(params[:content])
+post '/memo' do
+  name = params[:name]
+  content = params[:content]
   connection = PG.connect(dbname: 'sinatra_memo')
   connection.exec("INSERT INTO memos(name, content) VALUES ('#{name}', '#{content}')")
 
@@ -43,9 +41,6 @@ end
 get '/memo/:id' do
   @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
   @title = @memo[0]['name']
-  @memo_id = @memo[0]['id']
-  @memo_name = @memo[0]['name']
-  @memo_content = @memo[0]['content']
   erb :detail
 end
 
@@ -55,8 +50,8 @@ delete '/memo/:id' do
 end
 
 patch '/memo/:id' do
-  memo_name = h(params[:name])
-  memo_content = h(params[:content])
+  memo_name = params[:name]
+  memo_content = params[:content]
   PG.connect(dbname: 'sinatra_memo').exec("UPDATE memos SET name = '#{memo_name}', content = '#{memo_content}' WHERE id = #{params[:id]}")
   redirect to("/memo/#{params[:id]}")
 end
@@ -64,8 +59,5 @@ end
 get '/memo/:id/edit' do
   @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
   @title = @memo[0]['name']
-  @memo_id = @memo[0]['id']
-  @memo_name = @memo[0]['name']
-  @memo_content = @memo[0]['content']
   erb :edit
 end

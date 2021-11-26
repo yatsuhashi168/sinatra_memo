@@ -1,11 +1,11 @@
 <section class="section">
   <div class="content"><% @memos.each do |memo| %>
       <ul>
-        <li><a href="../memo/<%= memo['id'] %>"><%= memo['name'] %></a></li>
+        <li><a href="../memo/<%= memo['id'] %>"><%= h(memo['name']) %></a></li>
       </ul>
     <% end %>
   </div>
-  <form action = "/new" method = "get">
+  <form action = "/memo/new" method = "get">
     <button type="submit" class="button is-small is-info">メモ作成</button>
   </form>
 </section>
