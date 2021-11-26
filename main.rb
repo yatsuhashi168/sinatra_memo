@@ -39,8 +39,8 @@ post '/memo' do
 end
 
 get '/memo/:id' do
-  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
-  @title = @memo[0]['name']
+  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
+  @title = @memo['name']
   erb :detail
 end
 
@@ -57,7 +57,7 @@ patch '/memo/:id' do
 end
 
 get '/memo/:id/edit' do
-  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
-  @title = @memo[0]['name']
+  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
+  @title = @memo['name']
   erb :edit
 end
