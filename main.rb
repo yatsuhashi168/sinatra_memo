@@ -13,15 +13,6 @@ helpers do
   end
 end
 
-# get '/' do
-#   @title = '一覧'
-#   @memos = []
-#   Dir.glob('*', base: 'memos').each do |file|
-#     @memos << JSON.parse(File.read("./memos/#{file}"))
-#   end
-#   erb :index
-# end
-
 get '/' do
   @title = '一覧'
   @memos = []
@@ -40,21 +31,6 @@ get '/new' do
   erb :new
 end
 
-# post '/new' do
-#   name =  h(params[:name])
-#   content = h(params[:content])
-#   id = if Dir.empty?('./memos')
-#          1
-#        else
-#          Dir.glob('*', base: 'memos').last[/\d+/].to_i + 1
-#        end
-#   memo = { 'id' => id, 'name' => name, 'content' => content }
-#   File.open("./memos/memo_#{id}.json", 'w') do |file|
-#     JSON.dump(memo, file)
-#   end
-#   redirect to('/')
-# end
-
 post '/new' do
   name = h(params[:name])
   content = h(params[:content])
@@ -63,15 +39,6 @@ post '/new' do
 
   redirect to('/')
 end
-
-# get '/memo/:id' do
-#   @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-#   @title = @memo['name']
-#   @memo_id = @memo['id']
-#   @memo_name = @memo['name']
-#   @memo_content = @memo['content']
-#   erb :detail
-# end
 
 get '/memo/:id' do
   @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
@@ -82,25 +49,10 @@ get '/memo/:id' do
   erb :detail
 end
 
-# delete '/memo/:id' do
-#   File.delete("./memos/memo_#{params[:id]}.json")
-#   redirect to('/')
-# end
-
 delete '/memo/:id' do
   PG.connect(dbname: 'sinatra_memo').exec("DELETE FROM memos WHERE id = #{params[:id]}")
   redirect to('/')
 end
-
-# patch '/memo/:id' do
-#   memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-#   memo['name'] = h(params[:name])
-#   memo['content'] = h(params[:content])
-#   File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
-#     JSON.dump(memo, file)
-#   end
-#   redirect to("/memo/#{params[:id]}")
-# end
 
 patch '/memo/:id' do
   memo_name = h(params[:name])
@@ -108,15 +60,6 @@ patch '/memo/:id' do
   PG.connect(dbname: 'sinatra_memo').exec("UPDATE memos SET name = '#{memo_name}', content = '#{memo_content}' WHERE id = #{params[:id]}")
   redirect to("/memo/#{params[:id]}")
 end
-
-# get '/memo/:id/edit' do
-#   @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"))
-#   @title = @memo['name']
-#   @memo_id = @memo['id']
-#   @memo_name = @memo['name']
-#   @memo_content = @memo['content']
-#   erb :edit
-# end
 
 get '/memo/:id/edit' do
   @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")
