@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <mata charset="utf-8">
+  <head>
+    <meta charset="utf-8">
     <title><%= @title %></title>
-    </head>
-<body>
-<%= yield %>
-</body>
+    <link href="/css/bulma.min.css" rel="stylesheet">
+  </head>
+  <body>
+  <div>
+    <section class="hero is-info">
+      <div class="hero-body">
+        <p class="title">sinatra memo</p>
+      </div>
+    </section>
+    <%= yield %>
+  </div>
+  </body>
 </html>
