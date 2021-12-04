@@ -11,11 +11,15 @@ helpers do
   def h(text)
     Rack::Utils.escape_html(text)
   end
+
+  def connect_database
+    PG.connect(dbname: 'sinatra_memo')
+  end
 end
 
 get '/' do
   @title = '一覧'
-  connection = PG.connect(dbname: 'sinatra_memo')
+  connection = connect_database
   @memos = connection.exec('SELECT * FROM memos ORDER BY id') do |results|
     results.map do |memo|
       memo
@@ -32,7 +36,7 @@ end
 post '/memo' do
   name = params[:name]
   content = params[:content]
-  connection = PG.connect(dbname: 'sinatra_memo')
+  connection = connect_database
   connection.prepare('new', 'INSERT INTO memos(name, content) VALUES ($1, $2)')
   connection.exec_prepared('new', [name, content])
 
@@ -40,20 +44,20 @@ post '/memo' do
 end
 
 get '/memo/:id' do
-  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
+  @memo = connect_database.exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
   @title = @memo['name']
   erb :detail
 end
 
 delete '/memo/:id' do
-  PG.connect(dbname: 'sinatra_memo').exec("DELETE FROM memos WHERE id = #{params[:id]}")
+  connect_database.exec("DELETE FROM memos WHERE id = #{params[:id]}")
   redirect to('/')
 end
 
 patch '/memo/:id' do
   memo_name = params[:name]
   memo_content = params[:content]
-  connection = PG.connect(dbname: 'sinatra_memo')
+  connection = connect_database
   connection.prepare('patch', "UPDATE memos SET name = $1, content = $2 WHERE id = #{params[:id]}")
   connection.exec_prepared('patch', [memo_name, memo_content])
 
@@ -61,7 +65,7 @@ patch '/memo/:id' do
 end
 
 get '/memo/:id/edit' do
-  @memo = PG.connect(dbname: 'sinatra_memo').exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
+  @memo = connect_database.exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
   @title = @memo['name']
   erb :edit
 end
