@@ -33,7 +33,8 @@ post '/memo' do
   name = params[:name]
   content = params[:content]
   connection = PG.connect(dbname: 'sinatra_memo')
-  connection.exec("INSERT INTO memos(name, content) VALUES ('#{name}', '#{content}')")
+  connection.prepare('new', 'INSERT INTO memos(name, content) VALUES ($1, $2)')
+  connection.exec_prepared('new', [name, content])
 
   redirect to('/')
 end
@@ -52,7 +53,10 @@ end
 patch '/memo/:id' do
   memo_name = params[:name]
   memo_content = params[:content]
-  PG.connect(dbname: 'sinatra_memo').exec("UPDATE memos SET name = '#{memo_name}', content = '#{memo_content}' WHERE id = #{params[:id]}")
+  connection = PG.connect(dbname: 'sinatra_memo')
+  connection.prepare('patch', "UPDATE memos SET name = $1, content = $2 WHERE id = #{params[:id]}")
+  connection.exec_prepared('patch', [memo_name, memo_content])
+
   redirect to("/memo/#{params[:id]}")
 end
 
