@@ -34,11 +34,9 @@ get '/memo/new' do
 end
 
 post '/memo' do
-  name = params[:name]
-  content = params[:content]
   connection = connect_database
   connection.prepare('new', 'INSERT INTO memos(name, content) VALUES ($1, $2)')
-  connection.exec_prepared('new', [name, content])
+  connection.exec_prepared('new', [params[:name], params[:content]])
 
   redirect to('/')
 end
@@ -55,11 +53,9 @@ delete '/memo/:id' do
 end
 
 patch '/memo/:id' do
-  memo_name = params[:name]
-  memo_content = params[:content]
   connection = connect_database
   connection.prepare('patch', "UPDATE memos SET name = $1, content = $2 WHERE id = #{params[:id]}")
-  connection.exec_prepared('patch', [memo_name, memo_content])
+  connection.exec_prepared('patch', [params[:name], params[:content]])
 
   redirect to("/memo/#{params[:id]}")
 end
