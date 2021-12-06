@@ -40,13 +40,15 @@ post '/memo' do
 end
 
 get '/memo/:id' do
-  @memo = connecting_database.exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
+  connecting_database.prepare('detail', 'SELECT * FROM memos WHERE id = $1')
+  @memo = connecting_database.exec_prepared('detail', [params[:id]])[0]
   @title = @memo['name']
   erb :detail
 end
 
 delete '/memo/:id' do
-  connecting_database.exec("DELETE FROM memos WHERE id = #{params[:id]}")
+  connecting_database.prepare('delete', 'DELETE FROM memos WHERE id = $1')
+  connecting_database.exec_prepared('delete', [params[:id]])
   redirect to('/')
 end
 
@@ -58,7 +60,8 @@ patch '/memo/:id' do
 end
 
 get '/memo/:id/edit' do
-  @memo = connecting_database.exec("SELECT * FROM memos WHERE id = #{params[:id]}")[0]
+  connecting_database.prepare('edit', 'SELECT * FROM memos WHERE id = $1')
+  @memo = connecting_database.exec_prepared('edit', [params[:id]])[0]
   @title = @memo['name']
   erb :edit
 end
