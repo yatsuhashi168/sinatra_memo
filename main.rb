@@ -13,7 +13,7 @@ helpers do
   end
 
   def connecting_database
-    @connection ||= PG.connect(dbname: 'sinatra_memo')
+    @connecting_database ||= PG.connect(dbname: 'sinatra_memo')
   end
 end
 
