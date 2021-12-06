@@ -13,14 +13,13 @@ helpers do
   end
 
   def connect_database
-    PG.connect(dbname: 'sinatra_memo')
+    @connection ||= PG.connect(dbname: 'sinatra_memo')
   end
 end
 
 get '/' do
   @title = '一覧'
-  connection = connect_database
-  @memos = connection.exec('SELECT * FROM memos ORDER BY id') do |results|
+  @memos = connect_database.exec('SELECT * FROM memos ORDER BY id') do |results|
     results.map do |memo|
       memo
     end
