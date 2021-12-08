@@ -4,18 +4,25 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'erb'
+require 'pg'
 enable :method_override
 
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
   end
+
+  def connecting_database
+    @connecting_database ||= PG.connect(dbname: 'sinatra_memo')
+  end
 end
 
 get '/' do
   @title = '一覧'
-  @memos = Dir.glob('*', base: 'memos').map do |file|
-    JSON.parse(File.read("./memos/#{file}"), symbolize_names: true)
+  @memos = connecting_database.exec('SELECT * FROM memos ORDER BY id') do |results|
+    results.map do |memo|
+      memo
+    end
   end
   erb :index
 end
@@ -26,43 +33,35 @@ get '/memo/new' do
 end
 
 post '/memo' do
-  name =  params[:name]
-  content = params[:content]
-  id = if Dir.empty?('./memos')
-         1
-       else
-         Dir.glob('*', base: 'memos').last[/\d+/].to_i + 1
-       end
-  memo = { 'id' => id, 'name' => name, 'content' => content }
-  File.open("./memos/memo_#{id}.json", 'w') do |file|
-    JSON.dump(memo, file)
-  end
+  connecting_database.prepare('new', 'INSERT INTO memos(name, content) VALUES ($1, $2)')
+  connecting_database.exec_prepared('new', [params[:name], params[:content]])
+
   redirect to('/')
 end
 
 get '/memo/:id' do
-  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"), symbolize_names: true)
-  @title = @memo[:name]
+  connecting_database.prepare('detail', 'SELECT * FROM memos WHERE id = $1')
+  @memo = connecting_database.exec_prepared('detail', [params[:id]])[0]
+  @title = @memo['name']
   erb :detail
 end
 
 delete '/memo/:id' do
-  File.delete("./memos/memo_#{params[:id]}.json")
+  connecting_database.prepare('delete', 'DELETE FROM memos WHERE id = $1')
+  connecting_database.exec_prepared('delete', [params[:id]])
   redirect to('/')
 end
 
 patch '/memo/:id' do
-  memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"), symbolize_names: true)
-  memo[:name] = params[:name]
-  memo[:content] = params[:content]
-  File.open("./memos/memo_#{params[:id]}.json", 'w') do |file|
-    JSON.dump(memo, file)
-  end
+  connecting_database.prepare('patch', "UPDATE memos SET name = $1, content = $2 WHERE id = #{params[:id]}")
+  connecting_database.exec_prepared('patch', [params[:name], params[:content]])
+
   redirect to("/memo/#{params[:id]}")
 end
 
 get '/memo/:id/edit' do
-  @memo = JSON.parse(File.read("./memos/memo_#{params[:id]}.json"), symbolize_names: true)
-  @title = @memo[:name]
+  connecting_database.prepare('edit', 'SELECT * FROM memos WHERE id = $1')
+  @memo = connecting_database.exec_prepared('edit', [params[:id]])[0]
+  @title = @memo['name']
   erb :edit
 end
